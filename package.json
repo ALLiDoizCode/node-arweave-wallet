@@ -74,6 +74,7 @@
     "@antfu/utils": "catalog:inlined",
     "@types/kill-port": "catalog:",
     "@types/node": "catalog:types",
+    "axios": "^1.13.1",
     "bumpp": "catalog:cli",
     "eslint": "catalog:cli",
     "eslint-config-prettier": "catalog:",
