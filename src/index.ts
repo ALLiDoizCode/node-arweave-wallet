@@ -23,7 +23,7 @@ import { Buffer } from 'node:buffer'
 import { existsSync, readFileSync } from 'node:fs'
 import http from 'node:http'
 import { homedir } from 'node:os'
-import { dirname, join } from 'node:path'
+import { dirname, join, normalize, resolve } from 'node:path'
 import process from 'node:process'
 import { fileURLToPath } from 'node:url'
 import { DataItem as ArBundlesDataItem } from '@dha-team/arbundles/node'
@@ -73,6 +73,7 @@ export class NodeArweaveWallet {
       requestTimeout: config.requestTimeout ?? DEFAULT_REQUEST_TIMEOUT,
       browser: config.browser,
       browserProfile: config.browserProfile,
+      customHtmlTemplatePath: config.customHtmlTemplatePath,
     }
   }
 
@@ -1113,6 +1114,57 @@ export class NodeArweaveWallet {
   }
 
   private getSignerHTML(): string {
+    // Check for custom template path
+    if (this.config.customHtmlTemplatePath) {
+      try {
+        // Resolve and normalize path
+        const customPath = normalize(resolve(this.config.customHtmlTemplatePath))
+
+        // SECURITY: Reject path traversal attempts
+        if (customPath.includes('..')) {
+          console.warn('Path traversal detected in custom template path, using default')
+          return this.getDefaultSignerHTML()
+        }
+
+        // Validate file exists
+        if (!existsSync(customPath)) {
+          console.warn(`Custom template not found: ${customPath}, using default`)
+          return this.getDefaultSignerHTML()
+        }
+
+        // Read custom template
+        const customHtml = readFileSync(customPath, 'utf-8')
+
+        // Validate content
+        if (!customHtml || customHtml.trim() === '') {
+          console.warn('Custom template is empty, using default')
+          return this.getDefaultSignerHTML()
+        }
+
+        console.log(`Loaded custom HTML template from: ${customPath}`)
+
+        // Check if custom template has external script to inline
+        const scriptMatch = customHtml.match(/<script\s+src="([^"]+)"><\/script>/)
+        if (scriptMatch) {
+          const scriptPath = join(dirname(customPath), scriptMatch[1])
+          if (existsSync(scriptPath)) {
+            const js = readFileSync(scriptPath, 'utf-8')
+            return customHtml.replace(scriptMatch[0], `<script>${js}</script>`)
+          }
+        }
+
+        return customHtml
+      } catch (error: any) {
+        console.error(`Error loading custom template: ${error.message}`)
+        return this.getDefaultSignerHTML()
+      }
+    }
+
+    // Default behavior
+    return this.getDefaultSignerHTML()
+  }
+
+  private getDefaultSignerHTML(): string {
     const __filename = fileURLToPath(import.meta.url)
     const __dirname = dirname(__filename)
 

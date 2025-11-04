@@ -149,6 +149,8 @@ export interface NodeArweaveWalletConfig {
    * - Note: Profile support varies by browser and platform
    */
   browserProfile?: string
+  /** Path to custom HTML template file. If provided, overrides default signer UI. */
+  customHtmlTemplatePath?: string
 }
 
 export type Signer = (...args: unknown[]) => unknown
