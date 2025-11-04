@@ -1,18 +1,18 @@
 {
-  "name": "node-arweave-wallet",
+  "name": "@permamind/node-arweave-wallet",
   "type": "module",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "packageManager": "pnpm@10.17.1",
-  "description": "Use Arweave browser wallets (Wander or any other compatible wallet) from Node.js applications. Perfect for CLI tools and scripts that need secure wallet interactions without exposing private keys.",
-  "author": "Pawan Paudel <pawanpaudel93@gmail.com>",
+  "description": "Fork of node-arweave-wallet with custom UI template support for Permamind. Use Arweave browser wallets (Wander or any other compatible wallet) from Node.js applications with branded HTML templates.",
+  "author": "Permamind (fork) | Original: Pawan Paudel <pawanpaudel93@gmail.com>",
   "license": "MIT",
   "funding": "https://github.com/sponsors/pawanpaudel93",
-  "homepage": "https://github.com/pawanpaudel93/node-arweave-wallet#readme",
+  "homepage": "https://github.com/ALLiDoizCode/node-arweave-wallet#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/pawanpaudel93/node-arweave-wallet.git"
+    "url": "git+https://github.com/ALLiDoizCode/node-arweave-wallet.git"
   },
-  "bugs": "https://github.com/pawanpaudel93/node-arweave-wallet/issues",
+  "bugs": "https://github.com/ALLiDoizCode/node-arweave-wallet/issues",
   "keywords": [
     "arweave",
     "wallet",
@@ -28,9 +28,14 @@
     "ans-104",
     "data-item",
     "crypto",
-    "blockchain"
+    "blockchain",
+    "custom-ui",
+    "permamind"
   ],
   "sideEffects": false,
+  "publishConfig": {
+    "access": "public"
+  },
   "exports": {
     ".": "./dist/index.js",
     "./package.json": "./package.json"
